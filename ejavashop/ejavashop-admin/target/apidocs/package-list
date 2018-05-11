@@ -1,0 +1,9 @@
+com.ejavashop.job
+com.ejavashop.web.controller
+com.ejavashop.web.controller.member
+com.ejavashop.web.controller.system
+com.ejavashop.web.shiro
+com.ejavashop.web.shiro.tag
+com.ejavashop.web.util
+com.ejavashop.web.util.freemarker
+com.ejavashop.web.util.freemarkerutil

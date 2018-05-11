@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ejavashop.dao.shop.write.member.BonusDao">
+	<resultMap id="BonusResult" type="com.ejavashop.entity.member.Bonus">
+			<result property="id" column="id" />
+			<result property="fromUser" column="from_user" />
+			<result property="toUser" column="to_user" />
+			<result property="money" column="money" />
+			<result property="createTime" column="create_time" />
+			<result property="status" column="status" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="BonusResult">
+		select
+		   *
+		from `bonus`
+		where `id` = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.ejavashop.entity.member.Bonus">
+        update `bonus` 
+    	<set>
+			<if test="id != null">`id`= #{id},</if>
+			<if test="fromUser != null">`from_user`= #{fromUser},</if>
+			<if test="toUser != null">`to_user`= #{toUser},</if>
+			<if test="money != null">`money`= #{money},</if>
+			<if test="createTime != null">`create_time`= #{createTime},</if>
+			<if test="status != null">`status`= #{status}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<update id="updateList" parameterType="map" >
+        update `bonus` 
+    	<set>
+			`status`= 1
+	    </set>
+	    where  `create_time` between #{queryMap.startTime} and #{queryMap.endTime}
+	</update>
+	
+	<insert id="insert" parameterType="com.ejavashop.entity.member.Bonus" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`bonus`
+		(
+			
+			`from_user`,
+			`to_user`,
+			`money`,
+			`create_time`,
+			`status`
+		)
+		values
+		(
+			
+			#{fromUser},
+			#{toUser},
+			#{money},
+			now(),
+			#{status}
+		)
+	</insert>
+	
+	<select id="getBonusByPage" resultType="com.ejavashop.entity.member.Bonus"  parameterType="map">
+		select b.id,fm.`name` fromUserName,tm.`name` toUserName,b.create_time createTime,b.money,b.status from bonus b
+		left join member fm on fm.id=b.from_user
+		left join member tm on tm.id = b.to_user
+		where 1=1
+		<if test="queryMap.q_status != null and queryMap.q_status !=''"  >
+			and b.`status` = #{queryMap.status}
+		</if>
+		<if test="queryMap.q_startTime != null and queryMap.q_startTime !='' and queryMap.q_endTime != null and queryMap.q_endTime !=''"  >
+			and b.`create_time` between #{queryMap.q_startTime} and #{queryMap.q_endTime}
+		</if>
+		
+		<if test="queryMap.q_mobile != null and queryMap.q_mobile !=''"  >
+			and fm.`mobile` = #{queryMap.q_mobile}
+		</if>
+		<if test="queryMap.q_toMobile != null and queryMap.q_toMobile !=''"  >
+			and tm.`mobile` = #{queryMap.q_toMobile}
+		</if>
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	
+	<select id="getBonusCount" resultType="Integer">
+		select count(*) from bonus b
+		where 1=1
+		<if test="queryMap.q_status != null and queryMap.q_status !=''"  >
+			and `status` = #{queryMap.status}
+		</if>
+		<if test="queryMap.q_startTime != null and queryMap.q_startTime !='' and queryMap.q_endTime != null and queryMap.q_endTime !=''"  >
+			and b.`create_time` between #{queryMap.q_startTime} and #{queryMap.q_endTime}
+		</if>
+		<if test="queryMap.q_toMobile != null and queryMap.q_toMobile !=''"  >
+			and tm.`mobile` = #{queryMap.q_toMobile}
+		</if>
+	</select>
+
+</mapper>

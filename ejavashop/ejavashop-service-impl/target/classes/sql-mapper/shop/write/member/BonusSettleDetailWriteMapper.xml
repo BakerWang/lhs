@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ejavashop.dao.shop.write.member.BonusSettleDetailWriteDao">
+	<resultMap id="BonusSettleDetailResult" type="com.ejavashop.entity.member.BonusSettleDetail">
+			<result property="id" column="id" />
+			<result property="memberId" column="member_id" />
+			<result property="money" column="money" />
+			<result property="createTime" column="create_time" />
+			<result property="settleId" column="settle_id" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="BonusSettleDetailResult">
+		select
+		   *
+		from `bonus_settle_detail`
+		where `id` = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.ejavashop.entity.member.BonusSettleDetail">
+        update `bonus_settle_detail` 
+    	<set>
+			<if test="id != null">`id`= #{id},</if>
+			<if test="memberId != null">`member_id`= #{memberId},</if>
+			<if test="money != null">`money`= #{money},</if>
+			<if test="createTime != null">`create_time`= #{createTime}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="com.ejavashop.entity.member.BonusSettleDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`bonus_settle_detail`
+		(
+			
+			`member_id`,
+			`money`,
+			`create_time`,
+			 create_user
+		)
+		values
+		(
+			
+			#{memberId},
+			#{money},
+			now(),
+			#{createUser}
+		)
+	</insert>
+	<!-- 插入数据 -->
+	<insert id="insertSettle" parameterType="Map" >
+		INSERT INTO `bonus_settle_detail` (`member_id`, `money`, `create_time`,settle_id) (
+		select to_user,IFNULL(sum(money),0) money,now(), #{queryMap.settleId} from bonus 
+		where create_time BETWEEN #{queryMap.startTime} and #{queryMap.endTime} and status=0 group by to_user)
+	</insert>
+	<!-- 分页获取数据 -->
+	<select id="getBonusDetailByPage" resultType="com.ejavashop.entity.member.BonusSettleDetail"  parameterType="map">
+		select fm.id,fm.name,b.create_time createTime,b.money from bonus_settle_detail b
+		left join member fm on fm.id=b.member_id
+		where settle_id=#{queryMap.settleId}
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getBonusDetailCount" resultType="Integer">
+		select count(*) from bonus_settle_detail b
+		where settle_id=#{queryMap.settleId}
+	</select>
+	
+</mapper>

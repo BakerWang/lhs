@@ -1,0 +1,10 @@
+com.ejavashop.core
+com.ejavashop.core.email
+com.ejavashop.core.excel
+com.ejavashop.core.exception
+com.ejavashop.core.freemarker
+com.ejavashop.core.freemarkerutil
+com.ejavashop.core.ibatis
+com.ejavashop.core.matrix
+com.ejavashop.core.sms
+org.apache.log4j

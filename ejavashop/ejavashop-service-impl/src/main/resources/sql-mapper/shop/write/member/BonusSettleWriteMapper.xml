@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ejavashop.dao.shop.write.member.BonusSettleWriteDao">
+	<resultMap id="BonusSettleResult" type="com.ejavashop.entity.member.BonusSettle">
+			<result property="id" column="id" />
+			<result property="settleDate" column="settle_date" />
+			<result property="createUser" column="create_user" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="BonusSettleResult">
+		select
+		   *
+		from `bonus_settle`
+		where `id` = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.ejavashop.entity.member.BonusSettle">
+        update `bonus_settle` 
+    	<set>
+			<if test="id != null">`id`= #{id},</if>
+			<if test="settleDate != null">`settle_date`= #{settleDate},</if>
+			<if test="createUser != null">`create_user`= #{createUser}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="com.ejavashop.entity.member.BonusSettle" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`bonus_settle`
+		(
+			
+			`settle_date`,
+			`create_user`
+		)
+		values
+		(
+			now(),
+			#{createUser}
+		)
+	</insert>
+	
+	
+	
+	<!-- 分页获取数据 -->
+	<select id="getBonusSettleByPage" resultMap="BonusSettleResult"  parameterType="map">
+		select id,settle_date,create_user from bonus_settle b
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getBonusSettleCount" resultType="Integer">
+		select count(*) from bonus_settle b
+	</select>
+	
+</mapper>
